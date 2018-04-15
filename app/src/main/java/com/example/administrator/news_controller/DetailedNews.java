@@ -5,8 +5,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class DetailedNews {
 
+    public DetailedNews(Root root) {
+        this.root = root;
+    }
+
     @SerializedName("root")
-    @Expose
     private Root root;
 
     public Root getRoot() {
@@ -28,19 +31,15 @@ public class DetailedNews {
         }
 
         @SerializedName("url")
-        @Expose
         private String url;
 
         @SerializedName("share_image")
-        @Expose
         private String shareImage;
 
         @SerializedName("content")
-        @Expose
         private Content content;
 
         @SerializedName("title")
-        @Expose
         private String title;
 
         public String getUrl() {
