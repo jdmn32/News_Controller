@@ -2,5 +2,5 @@
     <string name="app_name">News_Controller</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
-    <string name="choose_category">Select Category</string>
+    <string name="base_url">http://meduza.io</string>
 </resources>

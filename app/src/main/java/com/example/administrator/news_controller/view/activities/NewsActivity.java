@@ -56,9 +56,10 @@ public class NewsActivity extends BaseActivity<NewsPresenter> implements NewsVie
         TextView titleTextView = findViewById(R.id.news_title);
         titleTextView.setText(detailedNews.getRoot().getTitle());
         TextView newsBodyTextView = findViewById(R.id.news_body);
-        newsBodyTextView.setText(detailedNews.getRoot().getContent().getBody());
+        newsBodyTextView.setText(Html.fromHtml(detailedNews.getRoot().getContent().getBody()));
         ImageView newsImageView = findViewById(R.id.news_image);
-        Utils.setImageFromUrl(this, newsImageView, detailedNews.getRoot().getShareImage());
+        Utils.setImageFromUrl(this, newsImageView, "http://meduza.io/" + detailedNews.getRoot().getShareImage());
+        Log.e(LOG_TAG, String.valueOf(detailedNews.getRoot().getShareImage()));
     }
 
     private boolean isNetworkConnected() {

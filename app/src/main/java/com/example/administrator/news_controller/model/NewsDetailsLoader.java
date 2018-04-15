@@ -24,24 +24,12 @@ import static com.example.administrator.news_controller.model.DbContract.Categor
 public class NewsDetailsLoader implements INewsDetailsLoader {
 
     private Context context;
+    private DetailsService detailsService;
 
-    public static final String LOG_TAG = NewsLoader.class.getName();
+    public static final String LOG_TAG = NewsDetailsLoader.class.getName();
 
     public NewsDetailsLoader(Context context) {
         this.context = context;
-    }
-
-    public interface DetailsService {
-
-        @GET("/{path}")
-        Call<DetailedNews> fetchDetails(@Path("path") String newsPath);
-    }
-
-    public interface DetailsListener {
-        void onLoaded(DetailedNews detailedNews);
-    }
-
-    public void loadDetails(String newsPath, final NewsDetailsLoader.DetailsListener listener) {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -52,10 +40,21 @@ public class NewsDetailsLoader implements INewsDetailsLoader {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        DetailsService detailsService = retrofit.create(DetailsService.class);
-        Call<DetailedNews> call = detailsService.fetchDetails(newsPath);
-        Log.e(LOG_TAG, newsPath);
-        call.enqueue(new Callback<DetailedNews>() {
+        detailsService = retrofit.create(DetailsService.class);
+    }
+
+    public interface DetailsService {
+
+        @GET("/api/v3/{path}")
+        Call<DetailedNews> fetchDetails(@Path("path") String newsPath);
+    }
+
+    public interface DetailsListener {
+        void onLoaded(DetailedNews detailedNews);
+    }
+
+    public void loadDetails(String newsPath, final NewsDetailsLoader.DetailsListener listener) {
+        detailsService.fetchDetails(newsPath).enqueue(new Callback<DetailedNews>() {
             @Override
             public void onResponse(Call<DetailedNews> call, Response<DetailedNews> response) {
                 if (response.isSuccessful()) {
