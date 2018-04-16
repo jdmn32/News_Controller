@@ -29,7 +29,7 @@ public class NewsPresenter extends BasePresenter<NewsView> {
     }
 
     public void loadDetailsFromDb(String newsPath){
-        newsDetailsFromDBLoader.loadNewsDetailsFromDb(newsPath, detailsFromDbListener);
+        newsDetailsFromDBLoader.loadNewsDetailsFromDb(detailsFromDbListener);
     }
 
     private NewsDetailsLoader.DetailsListener detailsListener = new NewsDetailsLoader.DetailsListener() {

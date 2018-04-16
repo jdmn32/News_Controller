@@ -1,31 +1,24 @@
 package com.example.administrator.news_controller.model;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteConstraintException;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.administrator.news_controller.News;
+import com.example.administrator.news_controller.NewsItem;
 
 import java.util.List;
 
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-
-import static com.example.administrator.news_controller.model.DbContract.CategoryEntries.CATEGORIES_URI;
 
 public class NewsLoader implements INewsLoader {
 
     private Context context;
-    private List<News.NewsItem> news;
 
     public static final String LOG_TAG = NewsLoader.class.getName();
 
@@ -40,18 +33,7 @@ public class NewsLoader implements INewsLoader {
     }
 
     public interface NewsListener{
-        void onLoaded(List<News.NewsItem> news);
-    }
-
-    public boolean canLoadMore(){
-        if (news != null) {
-            if (news.size() < 10) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
+        void onLoaded(List<NewsItem> news);
     }
 
     public void loadNews(final NewsLoader.NewsListener listener){
@@ -64,10 +46,16 @@ public class NewsLoader implements INewsLoader {
         Call<News> call = newsService.fetchNewsItems();
         call.enqueue(new Callback<News>() {
             @Override
-            public void onResponse(Call<News> call, Response<News> response) {
+            public void onResponse(Call<News> call, final Response<News> response) {
                 if (response.isSuccessful()){
                     listener.onLoaded(response.body().getChannel().getNewsItems());
-//                    saveToDataBase(news, id);
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.copyToRealm(response.body());
+                        }
+                    });
                 }
             }
 
@@ -77,24 +65,4 @@ public class NewsLoader implements INewsLoader {
             }
         });
     }
-
-//    private void saveToDataBase(List<News.NewsItem> news, Integer id){
-//        for (News.NewsItem newsItem : news) {
-//            ContentValues contentValues = new ContentValues();
-//            contentValues.put(DbContract.NewsEntries.NEWS_ID, newsItem.getId());
-//            contentValues.put(DbContract.NewsEntries.NEWS_TITLE, newsItem.getTitle());
-//            contentValues.put(DbContract.NewsEntries.NEWS_DATE, newsItem.getDate());
-//            contentValues.put(DbContract.NewsEntries.NEWS_DESCRIPTION, newsItem.getShortDescription());
-//            contentValues.put(DbContract.NewsEntries.CATEGORY_ID, id);
-//            newsItem.setCategoryId(id);
-//
-//            DbHelper dbHelper = new DbHelper(context);
-//            SQLiteDatabase dataBase = dbHelper.getWritableDatabase();
-//            try {
-//                dataBase.insertWithOnConflict(DbContract.NewsEntries.TABLE_NAME, null, contentValues, 5);
-//            } catch (SQLiteConstraintException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }

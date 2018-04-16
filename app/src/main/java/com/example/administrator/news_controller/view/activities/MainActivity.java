@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.administrator.news_controller.News;
+import com.example.administrator.news_controller.NewsItem;
 import com.example.administrator.news_controller.R;
 import com.example.administrator.news_controller.model.NewsFromDbLoader;
 import com.example.administrator.news_controller.model.NewsLoader;
@@ -62,7 +63,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
             }
         });
 
-        final List<News.NewsItem> news = new ArrayList<>();
+        final List<NewsItem> news = new ArrayList<>();
         newsAdapter = new NewsAdapter(news, this, this);
 
         newsRecyclerView.setHasFixedSize(true);
@@ -87,7 +88,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         return cm.getActiveNetworkInfo() != null;
     }
 
-    public void onNewsLoaded(List<News.NewsItem> news){
+    public void onNewsLoaded(List<NewsItem> news){
         progressBar.setVisibility(View.GONE);
         newsAdapter.addAll(news);
     }

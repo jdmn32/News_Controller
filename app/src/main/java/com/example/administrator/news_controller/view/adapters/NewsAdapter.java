@@ -1,7 +1,6 @@
 package com.example.administrator.news_controller.view.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,30 +9,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import com.example.administrator.news_controller.News;
+import com.example.administrator.news_controller.NewsItem;
 import com.example.administrator.news_controller.R;
 import com.example.administrator.news_controller.Utils;
-import com.example.administrator.news_controller.view.activities.NewsActivity;
 
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
 
     public static final String LOG_TAG = NewsAdapter.class.getName();
 
-    private List<News.NewsItem> feedItems;
+    private List<NewsItem> feedItems;
     private NewsSelectedListener listener;
     private Context context;
 
-    public NewsAdapter(List<News.NewsItem> feedItems, Context context, NewsSelectedListener listener) {
+    public NewsAdapter(List<NewsItem> feedItems, Context context, NewsSelectedListener listener) {
         this.listener = listener;
         this.feedItems = feedItems;
         this.context = context;
@@ -53,7 +45,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         notifyDataSetChanged();
     }
 
-    public void addAll(List<News.NewsItem> list) {
+    public void addAll(List<NewsItem> list) {
         feedItems.addAll(list);
         notifyDataSetChanged();
     }
@@ -61,7 +53,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     @Override
     public void onBindViewHolder(NewsViewHolder holder, int position) {
         Log.e(LOG_TAG, "onBindViewHolder()");
-        News.NewsItem newsItem = feedItems.get(position);
+        NewsItem newsItem = feedItems.get(position);
 
         URL newsUrl = Utils.parseUrl(newsItem.getUrl());
         String newsPath = newsUrl.getPath();
